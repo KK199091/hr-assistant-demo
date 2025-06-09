@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HR Virtual Assistant - Transforming Employee Experience</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #1a1a1a;
+            color: #ffffff;
+            overflow: hidden;
+        }
+        
+        .slide {
+            width: 100%;
+            height: 100vh;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            box-sizing: border-box;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .slide.active {
+            display: flex;
+        }
+        
+        /* Slide specific backgrounds */
+        .slide-title {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .slide-problem {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        
+        .slide-solution {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+        
+        .slide-demo {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
+        
+        .slide-technical {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
+        
+        .slide-roi {
+            background: linear-gradient(135deg, #30cfd0 0%, #330867 100%);
+        }
+        
+        h1 {
+            font-size: 4em;
+            margin-bottom: 0.5em;
+            text-align: center;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            animation: fadeInDown 1s ease-out;
+        }
+        
+        h2 {
+            font-size: 3em;
+            margin-bottom: 0.5em;
+            text-align: center;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        h3 {
+            font-size: 2em;
+            margin-bottom: 0.5em;
+            color: #ffd700;
+        }
+        
+        p {
+            font-size: 1.5em;
+            line-height: 1.6;
+            text-align: center;
+            max-width: 900px;
+            margin: 0 auto 1em;
+        }
+        
+        .bullet-list {
+            font-size: 1.4em;
+            line-height: 1.8;
+            text-align: left;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .bullet-list li {
+            margin-bottom: 0.5em;
+            animation: fadeInLeft 0.8s ease-out;
+            animation-fill-mode: both;
+        }
+        
+        .bullet-list li:nth-child(1) { animation-delay: 0.2s; }
+        .bullet-list li:nth-child(2) { animation-delay: 0.4s; }
+        .bullet-list li:nth-child(3) { animation-delay: 0.6s; }
+        .bullet-list li:nth-child(4) { animation-delay: 0.8s; }
+        
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 40px;
+            margin-top: 40px;
+            width: 100%;
+            max-width: 900px;
+        }
+        
+        .metric-card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            transform: scale(0);
+            animation: popIn 0.6s ease-out forwards;
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+        
+        .metric-card:nth-child(1) { animation-delay: 0.2s; }
+        .metric-card:nth-child(2) { animation-delay: 0.4s; }
+        .metric-card:nth-child(3) { animation-delay: 0.6s; }
+        .metric-card:nth-child(4) { animation-delay: 0.8s; }
+        
+        .metric-number {
+            font-size: 3em;
+            font-weight: bold;
+            color: #ffd700;
+            margin-bottom: 10px;
+        }
+        
+        .metric-label {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .demo-screen {
+            background: rgba(0,0,0,0.8);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 20px auto;
+            max-width: 800px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            animation: slideUp 1s ease-out;
+        }
+        
+        .conversation {
+            font-family: 'Courier New', monospace;
+            font-size: 1.2em;
+            line-height: 1.8;
+        }
+        
+        .user-msg {
+            color: #4facfe;
+            margin-bottom: 10px;
+        }
+        
+        .bot-msg {
+            color: #43e97b;
+            margin-bottom: 20px;
+        }
+        
+        .timeline {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 40px auto;
+            max-width: 1000px;
+            position: relative;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-50%);
+        }
+        
+        .timeline-item {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px 30px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            animation: fadeIn 1s ease-out;
+            animation-fill-mode: both;
+        }
+        
+        .timeline-item:nth-child(1) { animation-delay: 0.2s; }
+        .timeline-item:nth-child(2) { animation-delay: 0.4s; }
+        .timeline-item:nth-child(3) { animation-delay: 0.6s; }
+        .timeline-item:nth-child(4) { animation-delay: 0.8s; }
+        
+        .timeline-week {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #ffd700;
+            margin-bottom: 5px;
+        }
+        
+        .timeline-task {
+            font-size: 1em;
+            opacity: 0.9;
+        }
+        
+        .architecture-diagram {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 20px auto;
+            max-width: 900px;
+            animation: fadeIn 1.5s ease-out;
+        }
+        
+        .architecture-flow {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px 0;
+        }
+        
+        .architecture-node {
+            background: rgba(255,255,255,0.2);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            flex: 1;
+            margin: 0 10px;
+            animation: slideInLeft 1s ease-out;
+            animation-fill-mode: both;
+        }
+        
+        .architecture-node:nth-child(1) { animation-delay: 0.2s; }
+        .architecture-node:nth-child(2) { animation-delay: 0.4s; }
+        .architecture-node:nth-child(3) { animation-delay: 0.6s; }
+        
+        .arrow {
+            font-size: 2em;
+            color: #ffd700;
+            animation: pulse 2s infinite;
+        }
+        
+        .cta-button {
+            background: #ffd700;
+            color: #1a1a1a;
+            font-size: 1.5em;
+            font-weight: bold;
+            padding: 20px 60px;
+            border-radius: 50px;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 40px;
+            animation: bounce 2s infinite;
+            box-shadow: 0 10px 30px rgba(255,215,0,0.3);
+        }
+        
+        .slide-number {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            font-size: 1.2em;
+            opacity: 0.5;
+        }
+        
+        .logo {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            font-size: 1.5em;
+            font-weight: bold;
+            opacity: 0.8;
+        }
+        
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes slideInLeft {
+            from {
+                transform: translateX(-100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes popIn {
+            to {
+                transform: scale(1);
+            }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .navigation {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            z-index: 1000;
+        }
+        
+        .nav-button {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        
+        .nav-button:hover {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.05);
+        }
+        
+        /* Print styles for export */
+        @media print {
+            .slide {
+                page-break-after: always;
+                height: auto;
+                min-height: 100vh;
+            }
+            .navigation {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Slide 1: Title -->
+    <div class="slide slide-title active">
+        <div class="logo">Velox AI Consulting</div>
+        <h1>The Future of HR is Here</h1>
+        <p>Introducing an AI-Powered HR Virtual Assistant</p>
+        <p style="margin-top: 60px; font-size: 1.2em; opacity: 0.8;">
+            Transforming Employee Experience • Reducing HR Workload • Available 24/7
+        </p>
+        <div class="slide-number">1 / 12</div>
+    </div>
+    
+    <!-- Slide 2: The Problem -->
+    <div class="slide slide-problem">
+        <div class="logo">Velox AI Consulting</div>
+        <h2>The Challenge We Face Today</h2>
+        <ul class="bullet-list">
+            <li>🕐 Average 2-day wait for simple HR answers</li>
+            <li>📧 Complicated employee onboarding</li>
+            <li>😔 60% of HR time spent on routine questions</li>
+            <li>📉 Employee frustration with delayed responses</li>
+        </ul>
+        <p style="margin-top: 40px; font-size: 1.3em;">
+            <strong>Result:</strong> Talented HR professionals stuck in reactive mode instead of driving strategic initiatives
+        </p>
+        <div class="slide-number">2 / 12</div>
+    </div>
+    
+    <!-- Slide 3: The Vision -->
+    <div class="slide slide-solution">
+        <div class="logo">Velox AI Consulting</div>
+        <h2>Imagine a Different Reality</h2>
+        <p style="font-size: 1.6em; margin-bottom: 40px;">
+            What if employees could get instant, accurate HR answers anytime, anywhere?
+        </p>
+        <div class="demo-screen">
+            <div class="conversation">
+                <div class="user-msg">👤 "What's my vacation balance?"</div>
+                <div class="bot-msg">🤖 "You have 15 days of annual leave remaining this year."</div>
+                <div class="user-msg">👤 "How do I request time off?"</div>
+                <div class="bot-msg">🤖 "Simply log into the HR Portal, select 'Time Off', choose your dates, and submit. Approval typically takes 24 hours."</div>
+            </div>
+        </div>
+        <p style="margin-top: 30px;">
+            Natural conversation • Instant responses • Always accurate
+        </p>
+        <div class="slide-number">3 / 12</div>
+    </div>
+    
+    <!-- Slide 4: Key Benefits -->
+    <div class="slide">
+        <div class="logo">Velox AI Consulting</div>
+        <h2>Transformative Impact</h2>
+        <div class="metric-grid">
+            <div class="metric-card">
+                <div class="metric-number">75%</div>
+                <div class="metric-label">Reduction in HR Emails</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-number">24/7</div>
+                <div class="metric-label">Always Available</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-number">&lt;30s</div>
+                <div class="metric-label">Average Response Time</div>
+            </div>
+        </div>
+        <div class="slide-number">4 / 12</div>
+    </div>
+    
+    <!-- Slide 5: Demo Introduction -->
+    <div class="slide slide-demo">
+        <div class="logo">Velox AI Consulting</div>
+        <h2>See It In Action</h2>
+        <p style="font-size: 1.8em; margin-bottom: 40px;">
+            Live Demonstration
+        </p>
+        <div class="demo-screen">
+            <h3>Demo Scenarios</h3>
+            <ul style="text-align: left; font-size: 1.3em; line-height: 1.8;">
+                <li>📅 Time-pressed consultant checking leave balance</li>
+                <li>🏥 New employee exploring benefits</li>
+                <li>🏠 Manager clarifying remote work policy</li>
+                <li>❓ Handling unexpected questions gracefully</li>
+            </ul>
+        </div>
+        <p style="margin-top: 30px; font-style: italic;">
+            Watch how natural conversation delivers instant, accurate answers
+        </p>
+        <div class="slide-number">5 / 12</div>
+    </div>
+    
+    <!-- Slide 6: How It Works (Simple) -->
+    <div class="slide">
+        <div class="logo">Velox AI Consulting</div>
+        <h2>Simple Yet Powerful</h2>
+        <div class="architecture-diagram">
+            <h3 style="text-align: center; margin-bottom: 30px;">How It Works</h3>
+            <div class="architecture-flow">
+                <div class="architecture-node">
+                    <div style="font-size: 2em; margin-bottom: 10px;">🗣️</div>
+                    <div>Employee Asks Question</div>
+                </div>
+                <div class="arrow">→</div>
+                <div class="architecture-node">
+                    <div style="font-size: 2em; margin-bottom: 10px;">🧠</div>
+                    <div>AI Understands Intent</div>
+                </div>
+                <div class="arrow">→</div>
+                <div class="architecture-node">
+                    <div style="font-size: 2em; margin-bottom: 10px;">💬</div>
+                    <div>Instant Accurate Response</div>
+                </div>
+            </div>
+            <p style="text-align: center; margin-top: 30px; opacity: 0.8;">
+                Powered by advanced AI • Connected to HR knowledge base • Continuously learning
+            </p>
+        </div>
+        <div class="slide-number">6 / 12</div>
+    </div>
+    
+    <!-- Slide 7: Technical Architecture (for tech-savvy) -->
+    <div class="slide slide-technical">
+        <div class="logo">Velox AI Consulting</div>
+        <h2>Under the Hood</h2>
+        <p style="font-size: 1.3em; margin-bottom: 30px;">
+            Enterprise-ready architecture built for scale and security
+        </p>
+        <div class="architecture-diagram">
+            <ul style="text-align: left; font-size: 1.2em; line-height: 2;">
+                <li><strong>Voice & NLP:</strong> Advanced speech recognition and natural language processing</li>
+                <li><strong>AI Engine:</strong> Large language models with contextual understanding</li>
+                <li><strong>Knowledge Base:</strong> Real-time integration with HR systems and policies</li>
+                <li><strong>Security:</strong> Enterprise-grade encryption and access controls</li>
+                <li><strong>Analytics:</strong> Usage insights and continuous improvement</li>
+            </ul>
+        </div>
+        <p style="margin-top: 30px; font-style: italic;">
+            Built on proven technologies • Scalable to millions of interactions • Compliant with data regulations
+        </p>
+        <div class="slide-number">7 / 12</div>
+    </div>
+    
+    <!-- Slide 8: Use Cases -->
+    <div class="slide">
+        <div class="logo">Velox AI Consulting</div>
+        <h2>Endless Possibilities</h2>
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 30px; max-width: 1000px;">
+            <div class="metric-card">
+                <h3 style="font-size: 1.5em; margin-bottom: 15px;">Common Queries</h3>
+                <ul style="text-align: left; font-size: 1.1em;">
+                    <li>Leave balances & requests</li>
+                    <li>Policy clarifications</li>
+                    <li>Benefits information</li>
+                    <li>Process guidance</li>
+                </ul>
+            </div>
+            <div class="metric-card">
+                <h3 style="font-size: 1.5em; margin-bottom: 15px;">Advanced Support</h3>
+                <ul style="text-align: left; font-size: 1.1em;">
+                    <li>Onboarding assistance</li>
+                    <li>Performance review prep</li>
+                    <li>Career development</li>
+                    <li>Emergency contacts</li>
+                </ul>
+            </div>
+        </div>
+        <p style="margin-top: 40px; font-size: 1.3em;">
+            Handles 75% of routine queries • Escalates complex issues to HR • Learns from every interaction
+        </p>
+        <div class="slide-number">8 / 12</div>
+    </div>
+    
+    <!-- Slide 9: Implementation Timeline -->
+    <div class="slide">
+        <div class="logo">Velox AI Consulting</div>
+        <h2>Path to Success</h2>
+        <p style="font-size: 1.4em; margin-bottom: 40px;">
+            From pilot to firm-wide transformation in 8 weeks
+        </p>
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-week">Weeks 1-2</div>
+                <div class="timeline-task">Discovery & Design</div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-week">Weeks 3-4</div>
+                <div class="timeline-task">Build & Configure</div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-week">Weeks 5-6</div>
+                <div class="timeline-task">Pilot & Refine</div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-week">Weeks 7-8</div>
+                <div class="timeline-task">Rollout & Scale</div>
+            </div>
+        </div>
+        <p style="margin-top: 40px;">
+            Start with Advisory department • Expand based on success • Full deployment in 3 months
+        </p>
+        <div class="slide-number">9 / 12</div>
+    </div>
+    
+    <!-- Slide 10: ROI Analysis -->
+    <div class="slide slide-roi">
+        <div class="logo">Velox AI Consulting</div>
+        <h2>The Business Case</h2>
+        <div style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border-radius: 20px; padding: 40px; max-width: 800px;">
+            <h3 style="text-align: center; margin-bottom: 30px;">Return on Investment</h3>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 40px;">
+                <div>
+                    <h4 style="color: #ff6b6b; margin-bottom: 20px;">Costs</h4>
+                    <ul style="font-size: 1.2em; line-height: 1.8;">
+                        <li>Monthly operations: $2-3k</li>
+                        <li>Training & change management</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 style="color: #51cf66; margin-bottom: 20px;">Savings</h4>
+                    <ul style="font-size: 1.2em; line-height: 1.8;">
+                        <li>HR time saved: 45 hrs/week</li>
+                        <li>Improved employee satisfaction</li>
+                    </ul>
+                </div>
+            </div>
+            <p style="text-align: center; margin-top: 30px; font-size: 1.5em; color: #ffd700;">
+                <strong>Payback Period: 3-4 Months</strong>
+            </p>
+        </div>
+        <div class="slide-number">10 / 12</div>
+    </div>
+    
+    <!-- Slide 11: Future Vision -->
+    <div class="slide">
+        <div class="logo">Velox AI Consulting</div>
+        <h2>Beyond HR: The Bigger Picture</h2>
+        <p style="font-size: 1.4em; margin-bottom: 40px;">
+            This is just the beginning of our AI transformation journey
+        </p>
+        <div class="metric-grid">
+            <div class="metric-card">
+                <h3 style="font-size: 1.3em;">IT Support</h3>
+                <p style="font-size: 1em;">Password resets, software access, troubleshooting</p>
+            </div>
+            <div class="metric-card">
+                <h3 style="font-size: 1.3em;">Finance Queries</h3>
+                <p style="font-size: 1em;">Expense policies, invoicing, budget inquiries</p>
+            </div>
+            <div class="metric-card">
+                <h3 style="font-size: 1.3em;">Knowledge Management</h3>
+                <p style="font-size: 1em;">Best practices, methodologies, expertise location</p>
+            </div>
+            <div class="metric-card">
+                <h3 style="font-size: 1.3em;">Client Services</h3>
+                <p style="font-size: 1em;">Proposal support, engagement queries, staffing</p>
+            </div>
+        </div>
+        <p style="margin-top: 40px; font-size: 1.3em;">
+            Building the foundation for an AI-powered, efficient, innovative firm
+        </p>
+        <div class="slide-number">11 / 12</div>
+    </div>
+    
+    <!-- Slide 12: Call to Action -->
+    <div class="slide slide-title">
+        <div class="logo">Velox AI Consulting</div>
+        <h1>Let's Lead the Way</h1>
+        <p style="font-size: 1.6em; margin-bottom: 40px;">
+            Be the first firm to truly revolutionize employee experience.
+        </p>
+        <div style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border-radius: 20px; padding: 40px; max-width: 700px;">
+            <h3 style="margin-bottom: 20px;">Next Steps</h3>
+            <ul style="text-align: left; font-size: 1.3em; line-height: 1.8;">
+                <li>✅ Approve 4-week pilot with Advisory department</li>
+                <li>✅ Form small implementation team</li>
+                <li>✅ Define success metrics</li>
+                <li>✅ Begin transformation journey</li>
+            </ul>
+        </div>
+        <a href="#" class="cta-button">Start the Pilot</a>
+        <div class="slide-number">12 / 12</div>
+    </div>
+    
+    <!-- Navigation -->
+    <div class="navigation">
+        <button class="nav-button" onclick="previousSlide()">← Previous</button>
+        <button class="nav-button" onclick="nextSlide()">Next →</button>
+    </div>
+    
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        
+        function showSlide(index) {
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[index].classList.add('active');
+        }
+        
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % slides.length;
+            showSlide(currentSlide);
+        }
+        
+        function previousSlide() {
+            currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+            showSlide(currentSlide);
+        }
+        
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') nextSlide();
+            if (e.key === 'ArrowLeft') previousSlide();
+        });
+    </script>
+</body>
+</html>
